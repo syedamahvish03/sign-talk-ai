@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GestureTalk AI Pro</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/hands/hands.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/drawing_utils/drawing_utils.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@mediapipe/camera_utils/camera_utils.js"></script>
+</head>
+
+<body>
+  <div class="app-container">
+    <aside class="sidebar">
+      <h1 class="logo">Gesture<span>Talk</span></h1>
+      <nav>
+        <div class="mode-selector" style="display: flex; gap: 10px; margin-bottom: 15px;">
+          <button class="nav-btn active" id="mode-alpha" onclick="setMode('alpha')">Word Mode</button>
+          <button class="nav-btn" id="mode-sentence" onclick="setMode('sentence')">Sentence Mode</button>
+        </div>
+        <button class="nav-btn voice-toggle">🔇 Audio: OFF</button>
+        <button class="nav-btn add-btn" onclick="openModal()">+ Train New Word</button>
+      </nav>
+
+      <div id="sentence-preview" style="margin-top:20px;">
+        <h3 style="color: #10b981; font-size: 14px;">Live Sentence:</h3>
+        <p id="sidebar-sentence-text" style="font-size: 24px; color: white; margin: 5px 0;">---</p>
+      </div>
+
+      <div class="history-container">
+        <h3>History</h3>
+        <ul id="conversation-history"></ul>
+      </div>
+    </aside>
+
+    <main class="viewport">
+      <div class="video-card vision-section">
+        <video class="input_video" autoplay playsinline style="display:none;"></video>
+        <canvas class="output_canvas"></canvas>
+        <div class="result-overlay">
+          <span class="label">Detected Word</span>
+          <h2 id="gesture-display">Waiting...</h2>
+        </div>
+      </div>
+
+      <div id="sentence-container">
+        <h3 style="margin:0; font-size: 12px; color: var(--accent);">Live Sentence Building:</h3>
+        <p id="main-sentence-text" style="font-size: 24px; font-weight: bold; color: white; margin: 10px 0;">---</p>
+      </div>
+    </main>
+  </div>
+
+  <div id="customModal" class="modal">
+    <div class="modal-content">
+      <span class="close" onclick="closeModal()">&times;</span>
+      <h2>Train Custom Sign</h2>
+      <input type="text" id="custom-name" placeholder="Enter word name...">
+      <button onclick="startCustomTraining()" class="nav-btn" style="margin-top:15px;">Start Recording (3 Sec)</button>
+      <p id="modal-status" style="margin-top:10px; color: var(--accent);"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script src="history.js"></script>
+  <script src="formatter.js"></script>
+</body>
+
+</html>
