@@ -1,3 +1,4 @@
+require('dotenv').config();
 const nlp = require('compromise');
 const express = require('express');
 const mysql = require('mysql2');
@@ -14,11 +15,11 @@ app.use(express.static(path.join(process.cwd(), './')));
 
 // --- DATABASE ---
 const db = mysql.createConnection({
-    host: '127.0.0.1',
-    port: 3306,
-    user: 'root',
-    password: 'SQLSYSTEM',
-    database: 'GestureDB'
+    host: process.env.DB_HOST,
+    port: process.env.DB_PORT,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_NAME
 });
 
 db.connect(err => {
@@ -49,4 +50,10 @@ app.post('/update-gesture', (req, res) => {
     });
 });
 
-app.listen(3000, () => console.log("🚀 Server running at http://localhost:3000"));
+
+
+const PORT = process.env.PORT || 3000;
+
+app.listen(PORT, () => {
+    console.log(`🚀 Server running on port ${PORT}`);
+});
