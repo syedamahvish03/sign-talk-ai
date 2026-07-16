@@ -33,10 +33,38 @@ audioBtn.onclick = () => {
     window.speechSynthesis.speak(u);
 };
 
-function speak(text) {
+/* function speak(text) {
+    console.log("Speak function called:", text);
     if (!isAudioEnabled || !text) return;
     window.speechSynthesis.cancel();
     window.speechSynthesis.speak(new SpeechSynthesisUtterance(text));
+}*/
+
+let isSpeaking = false;
+
+function speak(text) {
+    if (!isAudioEnabled || !text) return;
+
+    // Don't interrupt if already speaking
+    if (isSpeaking) return;
+
+    const utterance = new SpeechSynthesisUtterance(text);
+
+    utterance.rate = 0.9;
+    utterance.pitch = 1;
+    utterance.volume = 1;
+
+    isSpeaking = true;
+
+    utterance.onend = () => {
+        isSpeaking = false;
+    };
+
+    utterance.onerror = () => {
+        isSpeaking = false;
+    };
+
+    window.speechSynthesis.speak(utterance);
 }
 
 function setMode(mode) {
@@ -49,6 +77,7 @@ function setMode(mode) {
 }
 
 function acceptWord(word) {
+    
     if (currentMode === 'alpha') {
         speak(word);
         const li = document.createElement('li');
@@ -56,6 +85,7 @@ function acceptWord(word) {
         historyList.prepend(li);
     } else {
         sentenceWords.push(word);
+        console.log("Sentence:", sentenceWords);
         const full = sentenceWords.join(" ");
         document.getElementById('sidebar-sentence-text').innerText = full;
         document.getElementById('main-sentence-text').innerText = full;
@@ -123,11 +153,13 @@ hands.onResults(results => {
         drawLandmarks(canvasCtx, currentLandmarks, { color: '#FFFFFF', lineWidth: 1, radius: 4 });
 
         const detected = identify(currentLandmarks);
+        console.log("Detected Gesture:", detected);
         gestureDisplay.innerText = detected;
 
         if (detected !== "Show Hand" && !isTraining) {
             if (detected === lastDetected) {
                 stableFrames++;
+                console.log("Stable Frames:", stableFrames);
                 if (stableFrames >= STABILITY_FRAMES) { acceptWord(detected); stableFrames = 0; lastDetected = null; }
             } else { lastDetected = detected; stableFrames = 0; }
         }
